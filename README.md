@@ -1,9 +1,12 @@
 ## Evaluacion tecnica Maria Ugas
 
-El proyecoCuento con dos endpoint 
+El proyecto cuenta con dos endpoint 
  - El solicitado para registrar usuarios que es un metodo POST
+   
    URL: http://localhost:8080/user
+   
    JSON de prueba:
+   
         {
         	"name":"Maria",
         	"email": "maun42@gmail.com",
