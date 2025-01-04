@@ -1,57 +1,55 @@
 package com.example.maun.controller;
 
-import com.example.maun.dto.UserDto;
-import com.example.maun.entity.User;
+import com.example.maun.dto.NewUser;
+import com.example.maun.dto.NewUserResponse;
+import com.example.maun.dto.UserResponse;
 import com.example.maun.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.file.AccessDeniedException;
 import java.util.*;
 
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v2")
+@Validated
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping( consumes=MediaType.APPLICATION_JSON_VALUE , produces=MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<UserDto> registrarUsuario(@RequestBody User user){
-        return ResponseEntity.ok(userService.registerUser(user));
-    }
-
-    @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE , path ="{userId}")
-    public ResponseEntity<User>  buscarUsuarios(@PathVariable("userId") UUID id){
-        Optional<User> user_ = userService.buscarPorId(id);
-
-        if(user_ != null && !user_.isEmpty())
-            return ResponseEntity.ok(user_.get());
-
-        return ResponseEntity.notFound().build();
-    }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception, HttpServletRequest request){
-
-        Map<String, String> apiError = new HashMap<>();
-        apiError.put("message",exception.getMessage());
-        apiError.put("timestamp", new Date().toString());
-        apiError.put("url", request.getRequestURL().toString());
-        apiError.put("http-method", request.getMethod());
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        if(exception instanceof AccessDeniedException){
-            status = HttpStatus.FORBIDDEN;
+    @PostMapping(path ="/sign-up", consumes=MediaType.APPLICATION_JSON_VALUE , produces=MediaType.APPLICATION_JSON_VALUE )
+    public ResponseEntity<NewUserResponse> registrarUsuario(@Valid @RequestBody NewUser user){
+        try {
+            NewUserResponse userResponse = userService.registerUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        if(exception instanceof RuntimeException){
-            status = HttpStatus.BAD_REQUEST;
-        }
-
-
-        return ResponseEntity.status(status).body(apiError);
     }
+
+    @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE , path ="/login/{userId}")
+    public ResponseEntity<UserResponse>  buscarUsuarios(@PathVariable("userId") UUID id, @RequestHeader(value = "Authorization", required = false) String authorizationHeader){
+        try {
+            log.info("authorizationHeader:  {} {}",authorizationHeader.startsWith("Bearer "),authorizationHeader == null );
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"No tiene autorizacion");
+            }
+            String token = authorizationHeader.substring(7);
+            log.info("token: {}",token);
+
+            UserResponse userResponse = userService.buscarPorId(id,token);
+            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
 }

@@ -1,9 +1,12 @@
 package com.example.maun.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import com.example.maun.util.Utils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,18 +20,16 @@ import java.util.*;
 public class User {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.UUID)
         private UUID id;
 
-        @NotNull
         private String name;
 
-        @NotNull
+        @NotNull(message = "El correo no puede ser nulo")
         @Column(unique = true)
         @Email(message = "El correo ingresado no es valido")
         private String email;
 
-        @NotNull
+        @NotNull(message = "El password no puede ser nulo")
         @Pattern(regexp = "[a-zA-Z0-9]+", message = "La clave solo debe contener letras y numeros")
         private String password;
 
@@ -41,33 +42,29 @@ public class User {
         @Column(columnDefinition = "boolean default true")
         private Boolean isactive;
 
-        private String usertoken;
-
         @OneToMany(mappedBy = "user", targetEntity=Phone.class)
         private  List<Phone> phones=new ArrayList<Phone>();
 
     public User(UUID id,  String name,  String email,  String password, LocalDateTime created,
-                LocalDateTime modified, Boolean isactive, String usertoken, List<Phone> phones) {
-        this.id = id;
+                LocalDateTime modified, Boolean isactive) {
+        this.id = Utils.generateUUID(id);
         this.name = name;
         this.email = email;
         this.password = password;
         this.created = created;
         this.modified = modified;
         this.isactive = isactive;
-        this.usertoken= usertoken;
-        this.phones = phones;
+
     }
 
-    public User(  String name,  String email,  String password, String usertoken,List<Phone> phones) {
+    public User( UUID id, String name,  String email,  String password) {
+        this.id = Utils.generateUUID(id);
         this.name = name;
         this.email = email;
         this.password = password;
         this.created = LocalDateTime.now();
         this.modified = LocalDateTime.now();
         this.isactive = true;
-        this.usertoken= usertoken;
-        this.phones = phones;
     }
 
     public User() {
@@ -135,13 +132,6 @@ public class User {
         this.phones = phones;
     }
 
-    public String getUsertoken() {
-        return usertoken;
-    }
-
-    public void setUsertoken(String usertoken) {
-        this.usertoken = usertoken;
-    }
 
     @Override
     public String toString() {

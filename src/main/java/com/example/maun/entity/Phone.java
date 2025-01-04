@@ -2,27 +2,25 @@ package com.example.maun.entity;
 
 import com.example.maun.util.Utils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
-import java.util.Date;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
 @Table(name = "phone")
 public class Phone {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotNull
-    private String number;
+    @NotNull(message = "El número de teléfono es requerido")
+    private Long number;
 
-    @NotNull
-    private String citycode;
+    @NotNull(message = "El código de ciudad es requerido")
+    private Integer citycode;
 
-    @NotNull
+    @NotNull(message = "El código de país es requerido")
     private String countrycode;
 
     @ManyToOne
@@ -30,21 +28,19 @@ public class Phone {
     @JsonIgnore
     private User user=new User();
 
-    public Phone(UUID id, String number, String citycode, String countrycode, User user) {
+    public Phone(UUID id, Long number, Integer citycode, String countrycode) {
+        this.id = Utils.generateUUID(id);
+        this.number = number;
+        this.citycode = citycode;
+        this.countrycode = countrycode;
+    }
+
+    public Phone(UUID id, Long number, Integer citycode, String countrycode, User user) {
         this.id = Utils.generateUUID(id);
         this.number = number;
         this.citycode = citycode;
         this.countrycode = countrycode;
         this.user = user;
-    }
-
-
-
-    public Phone(  UUID id,String number, String citycode, String countrycode) {
-        this.id = Utils.generateUUID(id);
-        this.number = number;
-        this.citycode = citycode;
-        this.countrycode = countrycode;
     }
 
     public Phone() {
@@ -58,19 +54,19 @@ public class Phone {
         this.id = id;
     }
 
-    public String getNumber() {
+    public Long getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Long number) {
         this.number = number;
     }
 
-    public String getCitycode() {
+    public Integer getCitycode() {
         return citycode;
     }
 
-    public void setCitycode(String citycode) {
+    public void setCitycode(Integer citycode) {
         this.citycode = citycode;
     }
 

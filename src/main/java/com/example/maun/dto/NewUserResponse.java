@@ -12,12 +12,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private UUID id;
+public class NewUserResponse {
+    private UUID id; 
     private LocalDateTime created;
-    private LocalDateTime modified;
-    private LocalDateTime last_login;
+    private LocalDateTime lastLogin;
     private String token;
-    private Boolean isactive;
+    private Boolean isActive;
 
 }
