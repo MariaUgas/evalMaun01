@@ -1,6 +1,10 @@
-package com.example.maun.controller;
+package com.example.maun.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.example.maun.dto.ErrorList;
+import com.example.maun.dto.ErrorResponse;
+import com.example.maun.dto.PhoneUser;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,32 +27,25 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler{
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, Object> apiError = new HashMap<>();
+    public ResponseEntity<ErrorList> handleValidationErrors(MethodArgumentNotValidException ex) {
+        ErrorList errores= new ErrorList();
         List<String> errors = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-
-        apiError.put("timestamp", new Date());
-        apiError.put("message", "Error de validación");
-        apiError.put("errors", errors);
-
-        return ResponseEntity.badRequest().body(apiError);
+        errores.setErrores(errors.stream()
+                .map(er -> new ErrorResponse(LocalDateTime.now(),HttpStatus.BAD_REQUEST.value(),er))
+                .collect(Collectors.toList()));
+        return ResponseEntity.badRequest().body(errores);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception, HttpServletRequest request) {
-        Map<String, String> apiError = new HashMap<>();
-        apiError.put("message", exception.getMessage());
-        apiError.put("timestamp", new Date().toString());
-        apiError.put("url", request.getRequestURL().toString());
-        apiError.put("http-method", request.getMethod());
-
+    public ResponseEntity<ErrorList> handleGenericException(Exception exception, HttpServletRequest request) {
         HttpStatus status = determineHttpStatus(exception);
-
-        return ResponseEntity.status(status).body(apiError);
+        ErrorList errores= new ErrorList();
+        errores.setError(new ErrorResponse(LocalDateTime.now(),status.value(),exception.getMessage()));
+        return ResponseEntity.status(status).body(errores);
     }
 
     private HttpStatus determineHttpStatus(Exception exception) {

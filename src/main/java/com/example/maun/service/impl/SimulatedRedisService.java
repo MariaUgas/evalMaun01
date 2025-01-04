@@ -1,4 +1,4 @@
-package com.example.maun.service;
+package com.example.maun.service.impl;
 
 import org.springframework.stereotype.Service;
 

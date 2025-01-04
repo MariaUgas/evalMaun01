@@ -17,43 +17,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class JwtService {
+public interface JwtService {
 
+ String generateToken(User user, Map<String, Object> extraClaims) ;
+ void saveToken(String key, String token) ;
+ String getToken(String key) ;
 
-    @Value("${token.jwt.expiration-minutes}")
-    private long EXPIRATION_MINUTES;
-
-    @Value("${token.jwt.secret-key}")
-    private String SECRET_KEY;
-
-    @Autowired
-    SimulatedRedisService redis;
-
-    public String generateToken(User user, Map<String, Object> extraClaims) {
-
-        Date issuedAt = new Date(System.currentTimeMillis());
-        Date expiration = new Date( issuedAt.getTime() + (EXPIRATION_MINUTES * 60 * 1000) );
-
-        return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(user.getName())
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .signWith(generateKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public void saveToken(String key, String token) {
-        redis.saveToken(key, token,  (EXPIRATION_MINUTES * 60 * 1000));
-    }
-
-    public String getToken(String key) {
-        return redis.getToken(key);
-    }
-
-    private Key generateKey() {
-        byte[] secretAsBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(secretAsBytes);
-    }
 }
