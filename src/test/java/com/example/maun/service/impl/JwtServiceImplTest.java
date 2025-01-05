@@ -1,5 +1,6 @@
 package com.example.maun.service.impl;
 
+import com.example.maun.cache.SimulatedRedisService;
 import com.example.maun.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

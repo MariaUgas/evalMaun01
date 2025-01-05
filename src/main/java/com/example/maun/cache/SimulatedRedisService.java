@@ -1,10 +1,10 @@
-package com.example.maun.service.impl;
+package com.example.maun.cache;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Component
 public class SimulatedRedisService {
 
     private final ConcurrentHashMap<String, String> store = new ConcurrentHashMap<>();
