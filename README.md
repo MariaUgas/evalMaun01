@@ -5,8 +5,7 @@ Para ejecutar este proyecto, necesitas tener instalado:
 
 - Java 11 o superior
 - Gradle 7.x o superior
-- SpringBoot 2.5.14
-- Un IDE compatible con Spring Boot (recomendado: IntelliJ IDEA o Eclipse)
+- Un IDE compatible con Spring Boot y Lombok (recomendado: IntelliJ IDEA o Eclipse)
 
 ## Características Principales
 
@@ -17,12 +16,12 @@ Para ejecutar este proyecto, necesitas tener instalado:
 - Persistencia de datos utilizando JPA y H2 Database
 
 ## Diagrama de componentes
-![diagrama](image/diagramaComponentes.png "diagrama de componentes")
+![diagramaComponenteGeneral](image/diagramaComponentes.png "diagrama de componentes")
 ## Diagramas de secuencia
 - creación de usuario
-![diagrama](image/diagramaSecuencia_creacion.png "diagrama de secuencia - creación de usuario")
+![diagramaSecuencia1](image/diagramaSecuencia_creacion.png "diagrama de secuencia - creación de usuario")
 - consulta de usuario
-![diagrama](image/diagramaSecuencia_consulta.png "diagrama de componentes")
+![diagramaSecuencia2](image/diagramaSecuencia_consulta.png "diagrama de componentes")
 
 ## Configuración del Proyecto
 
