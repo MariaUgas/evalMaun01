@@ -36,7 +36,7 @@ public class JwtServiceImpl implements JwtService {
 
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getName())
+                .setSubject(user.getEmail())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)

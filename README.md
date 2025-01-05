@@ -1,6 +1,12 @@
 # API de Creación y consulta de usuario
+## Requisitos Previos
 
+Para ejecutar este proyecto, necesitas tener instalado:
 
+- Java 11 o superior
+- Gradle 7.x o superior
+- SpringBoot 2.5.14
+- Un IDE compatible con Spring Boot (recomendado: IntelliJ IDEA o Eclipse)
 
 ## Características Principales
 
@@ -17,14 +23,6 @@
 ![diagrama](image/diagramaSecuencia_creacion.png "diagrama de secuencia - creación de usuario")
 - consulta de usuario
 ![diagrama](image/diagramaSecuencia_consulta.png "diagrama de componentes")
-
-## Requisitos Previos 
-
-Para ejecutar este proyecto, necesitas tener instalado:
-
-- Java 11 o superior
-- Gradle 7.x o superior
-- Un IDE compatible con Spring Boot (recomendado: IntelliJ IDEA o Eclipse)
 
 ## Configuración del Proyecto
 
