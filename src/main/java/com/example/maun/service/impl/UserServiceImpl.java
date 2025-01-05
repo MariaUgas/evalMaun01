@@ -18,7 +18,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@Service
 @Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -40,12 +40,14 @@ public class UserServiceImpl implements UserService {
             String jwt = jwtService.generateToken(user,generateExtraClaims(user));
             log.info("Datos del usuario creado , id:{}",user.getId());
             jwtService.saveToken( user.getId().toString(),   jwt    );
-            if(!newUser.getPhones().isEmpty()) {
-                log.info("Datos del telefono del usuario :{} ",user.getPhones().toString());
-                List<Phone> phones = newUser.getPhones().stream()
-                        .map(pu -> new Phone(null, pu.getNumber(), pu.getCitycode(), pu.getCountrycode(), user))
-                        .collect(Collectors.toList());
-                phoneRepository.saveAllAndFlush(phones);
+            if(newUser.getPhones()!=null) {
+                if(!newUser.getPhones().isEmpty()){
+                    log.info("Datos del telefono del usuario :{} ",user.getPhones().toString());
+                    List<Phone> phones = newUser.getPhones().stream()
+                            .map(pu -> new Phone(null, pu.getNumber(), pu.getCitycode(), pu.getCountrycode(), user))
+                            .collect(Collectors.toList());
+                    phoneRepository.saveAllAndFlush(phones);
+                }
             }
             return new NewUserResponse(
                     user.getId(),
