@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -52,9 +53,15 @@ public class GlobalExceptionHandler{
         if (exception instanceof AccessDeniedException) {
             return HttpStatus.FORBIDDEN;
         }
+        if (exception instanceof ResponseStatusException) {
+            return HttpStatus.UNAUTHORIZED;
+        }
         if (exception instanceof RuntimeException) {
             return HttpStatus.BAD_REQUEST;
         }
+
+
+
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
