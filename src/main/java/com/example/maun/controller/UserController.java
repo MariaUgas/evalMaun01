@@ -31,7 +31,7 @@ public class UserController {
             NewUserResponse userResponse = userService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
         } catch (RuntimeException e) {
-            throw e;
+                throw e;
         }
     }
 

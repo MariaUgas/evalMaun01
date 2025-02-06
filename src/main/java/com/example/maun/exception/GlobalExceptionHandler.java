@@ -49,7 +49,7 @@ public class GlobalExceptionHandler{
         return ResponseEntity.status(status).body(errores);
     }
 
-    private HttpStatus determineHttpStatus(Exception exception) {
+    private HttpStatus determineHttpStatus(Exception exception){
         if (exception instanceof AccessDeniedException) {
             return HttpStatus.FORBIDDEN;
         }

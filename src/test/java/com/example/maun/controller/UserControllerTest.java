@@ -120,7 +120,6 @@ class UserControllerTest {
     void buscarUsuarios_UnauthorizedInvalidToken() {
         // Given
         String invalidToken = "InvalidToken";
-
         // When/Then
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
