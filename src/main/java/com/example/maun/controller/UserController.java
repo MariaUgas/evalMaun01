@@ -31,14 +31,13 @@ public class UserController {
             NewUserResponse userResponse = userService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
         } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+                throw e;
         }
     }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE , path ="/login/{userId}")
     public ResponseEntity<UserResponse>  buscarUsuarios(@PathVariable("userId") UUID id, @RequestHeader(value = "Authorization", required = false) String authorizationHeader){
         try {
-            log.info("authorizationHeader:  {} {}",authorizationHeader.startsWith("Bearer "),authorizationHeader == null );
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"No tiene autorizacion");
             }
@@ -47,8 +46,8 @@ public class UserController {
 
             UserResponse userResponse = userService.buscarPorId(id,token);
             return ResponseEntity.status(HttpStatus.OK).body(userResponse);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }catch (RuntimeException e) {
+            throw e;
         }
     }
 
